@@ -11,7 +11,7 @@ class GUI:
         self.window.geometry("800x700")
         self.window.configure(bg="#142a43")
         self.host = socket.gethostbyname(socket.getfqdn())
-        self.start()
+        self.spela()
 
     def start(self):
         self.clear() 
@@ -66,23 +66,28 @@ class GUI:
         self.clear()
 
         titel = tk.Label(self.window, text="Sänka skepp", bg="#142a43", fg="#9cffba", font=("Roboto", 70))
-        titel.grid(row=0, column=0)
-        
-        p1 = tk.Canvas(self.window, width=300, height=600)
-        p1.grid(row=1, column=0)
-        
-        p2 = tk.Canvas(self.window, width=300, height=600)
-        p2.grid(row=1, column=1)
+        p1 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
+        p2 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
 
+        titel.pack()
+        p1.pack(side=tk.LEFT, padx=200)
+        p2.pack(side=tk.RIGHT, padx=200)
 
-        # Spelare 1 plan
+        # Din spelplan
         for r in range(10):
             for c in range(10):
-                coords = (c*30+4, r*30+4, c*30+30, r*30+30)
-                p1.create_rectangle(coords, fill='white', width=2)
-        
-        p1.bind('<Button-1>', lambda event: p1.itemconfig(tk.CURRENT, fill="blue"))
+                coords = (c*40, r*40, c*40+40, r*40+40)
+                p1.create_rectangle(coords, fill='#142a43', width=2)
 
+        # Fiendens spelplan
+        for r in range(10):
+            for c in range(10):
+                coords = (c*40, r*40, c*40+40, r*40+40)
+                p2.create_rectangle(coords, fill='#142a43', width=2)
+        
+        # Om det är vår tur att spela så ska bara vi ha bind enablat
+        p1.bind('<Button-1>', lambda event: p1.itemconfig(tk.CURRENT, fill="blue"))
+        p2.bind('<Button-1>', lambda event: p2.itemconfig(tk.CURRENT, fill="red"))
 
     def kopiera(self):
         self.window.clipboard_clear()
