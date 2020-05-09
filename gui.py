@@ -12,6 +12,7 @@ class GUI:
         self.window.geometry("1000x700")
         self.window.configure(bg="#142a43")
         self.host = socket.gethostbyname(socket.getfqdn())
+        self.öra = Server()
         self.start()
 
     def start(self):
@@ -31,8 +32,7 @@ class GUI:
     def skapa(self):
         self.clear()
 
-        if not hasattr(self, 'öra'):
-            self.öra = Server()
+        if not hasattr(self, 'tråd'):
             tråd = threading.Thread(target=self.öra.lyssna, args=(self,))
             tråd.start()
 
@@ -63,9 +63,14 @@ class GUI:
 
         titel = tk.Label(self.window, text="Sänka skepp",
                          bg="#142a43", fg="#9cffba", font=("Roboto", 70))
+
         adress = tk.Entry(self.window, width=50)
+
         b_anslut = tk.Button(self.window, text="Anslut",
-                             height=2, width=20, font=("Roboto", 20))
+                            height=2, width=20, font=("Roboto", 20),
+                            command=lambda: threading.Thread(target=self.öra.anslut,
+                            args=(self, adress.get(),)).start())
+        
         b_avbryt = tk.Button(self.window, text="Avbryt", height=2, width=20, font=(
             "Roboto", 20), command=self.start)
 
@@ -74,35 +79,45 @@ class GUI:
         b_anslut.pack(pady=30)
         b_avbryt.pack(pady=10)
 
-    def spela(self):
+    def placera_skepp(self):
         self.clear()
 
         titel = tk.Label(self.window, text="Sänka skepp",
                          bg="#142a43", fg="#9cffba", font=("Roboto", 70))
-        p1 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
-        p2 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
+        
+        self.p1 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
+        
+        self.p2 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
+
         self.redo = tk.Button(self.window, text="Redo", height=2, width=20, font=(
             "Roboto", 20), command=lambda: self.öra.redo(self))
 
         titel.pack()
-        p1.pack(side=tk.LEFT, padx=50)
+        self.p1.pack(side=tk.LEFT, padx=50)
         self.redo.pack(side=tk.LEFT, expand=tk.YES)
-        p2.pack(side=tk.RIGHT, padx=50)
+        self.p2.pack(side=tk.RIGHT, padx=50)
 
-        # Din spelplan
         for r in range(10):
             for c in range(10):
                 coords = (c*40, r*40, c*40+40, r*40+40)
-                p1.create_rectangle(coords, fill='#142a43', width=2)
+                # Din spelplan
+                self.p1.create_rectangle(coords, fill='#142a43', width=2)
+                # Fiendens spelplan
+                self.p2.create_rectangle(coords, fill='#142a43', width=2)
 
-        # Fiendens spelplan
-        for r in range(10):
-            for c in range(10):
-                coords = (c*40, r*40, c*40+40, r*40+40)
-                p2.create_rectangle(coords, fill='#142a43', width=2)
+        self.p1.bind('<Button-1>', lambda event: self.p1.itemconfig(tk.CURRENT, fill="#9cffba"))
 
-        # Om det är vår tur att spela så ska bara vi ha bind enablat
-        p1.bind('<Button-1>', lambda event: p1.itemconfig(tk.CURRENT, fill="#9cffba"))
+    def spela(self):
+        self.p1.unbind('<Button-1>')
+        self.p2.bind('<Button-1>', lambda event: self.gissa(event))
+    
+    def gissa(self, event):
+        coord = event.widget.find_withtag(tk.CURRENT)
+
+        # Skicka koordinaten till motståndarens server och kolla om den är träffad eller inte
+        self.öra.gissa(self, coord)
+
+        #träff = self.p2.itemcget(coord, 'fill')
 
     def kopiera(self):
         self.window.clipboard_clear()
