@@ -8,6 +8,7 @@ class Server:
         self.port = 4444
 
     def lyssna(self, gui):
+        # Funkar asbra
         with self.server as s:
             try:
                 s.bind((self.host, self.port))
@@ -27,19 +28,7 @@ class Server:
                     except Exception:
                         gui.start()
                         return
-                    
-                    '''
-                    if not data:
-                        gui.start()
-                        if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
-                            self.p1_starta = False
-                            self.p2_starta = False
-                        elif hasattr(self, 'p1_starta'):
-                            self.p1_starta = False
-                        elif  hasattr(self, 'p2_starta'):
-                            self.p2_starta = False
-                        break
-                    ''' 
+    
                     if data:
                         # kolla om de är redo att starta
                         data_str = str(data.decode('utf-8')).strip()
@@ -53,12 +42,8 @@ class Server:
                             # inkommande koordinater, kolla om det är miss eller träff
                             print(data_str)
 
-                        if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
-                            print('båda är anslutna!!!')
-                            gui.redo.pack_forget()
-                            gui.spela()
-
     def anslut(self, gui, host):
+        # funkar skitdåligt
         with self.server as s:
             try:
                 s.connect((host, 4444))
@@ -77,36 +62,30 @@ class Server:
                     print('Received:', data_str)
 
                     if data_str == 'redo':
-                            self.p2_starta = True
-                    elif data_str == 'träff' or data_str == 'miss':
-                        # Träffade vi eller missade vi?
-                        print('Received:', data_str)
+                        self.p2_starta = True
+                        if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
+                            print('båda är anslutna!!!')
+                            gui.redo.pack_forget()
+                            gui.spela()
+                    elif 'träff' in data_str or 'miss' in data_str:
+                        # kolla om gissningen träffade eller missade 
+                        print(data_str)
+                        print('vi träffade eller missade!')
                     else:
                         # inkommande koordinater, kolla om det är miss eller träff
-                        print('Received:', data_str)
-
-                    if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
-                        print('båda är anslutna!!!')
-                        gui.redo.pack_forget()
-                        gui.spela()
-
+                        print(data_str)
+                        print('träffade eller missade vår motståndare?')
+    
     def redo(self, gui):
         try:
-            # KAN INTE för om jag inte är server har jag inte conn
             self.conn.send(b'redo')
         except Exception as e:
             try:
-                # KAN INTE för om jag inte är server har jag inte conn
                 self.server.sendall(b'redo')
-                '''
-                print(e)
-                gui.start()
-                return
-                '''
             except Exception as e:
                 print(e)
                 gui.start()
-                return  
+                return
                  
         self.p1_starta = True
 
@@ -116,12 +95,10 @@ class Server:
             gui.spela()
 
     def gissa(self, gui, coord):
-        print(coord)
-        '''
+        # Returnera True om vi gissa rätt, annars fel.
         try:
             coord = str(coord).encode('utf-8')
             self.conn.send(coord)
         except Exception:
-            gui.start()
-            return
-        '''
+            self.server.send(coord)
+        
