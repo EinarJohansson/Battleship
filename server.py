@@ -8,7 +8,6 @@ class Server:
         self.port = 4444
 
     def lyssna(self, gui):
-        # Funkar asbra
         with self.server as s:
             try:
                 s.bind((self.host, self.port))
@@ -35,6 +34,10 @@ class Server:
 
                         if data_str == 'redo':
                             self.p2_starta = True
+                            if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
+                                print('båda är anslutna!!!')
+                                gui.redo.pack_forget()
+                                gui.spela()
                         elif data_str == 'träff' or data_str == 'miss':
                             # Träffade vi eller missade vi?
                             print(data_str)
@@ -43,7 +46,6 @@ class Server:
                             print(data_str)
 
     def anslut(self, gui, host):
-        # funkar skitdåligt
         with self.server as s:
             try:
                 s.connect((host, 4444))
