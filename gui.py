@@ -90,7 +90,7 @@ class GUI:
         self.p2 = tk.Canvas(self.window, width=400, height=400, bg='#142a43')
 
         self.redo = tk.Button(self.window, text="Redo", height=2, width=20, font=(
-            "Roboto", 20), command=lambda: self.öra.redo(self))
+            "Roboto", 20), command=lambda: self.öra.skicka('redo', self))
 
         titel.pack()
         self.p1.pack(side=tk.LEFT, padx=50)
@@ -115,9 +115,7 @@ class GUI:
         coord = event.widget.find_withtag(tk.CURRENT)
 
         # Skicka koordinaten till motståndarens server och kolla om den är träffad eller inte
-        self.öra.gissa(self, coord)
-
-        #träff = self.p2.itemcget(coord, 'fill')
+        self.öra.skicka(coord, self)
 
     def kopiera(self):
         self.window.clipboard_clear()
