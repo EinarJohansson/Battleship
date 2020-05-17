@@ -1,5 +1,5 @@
 Features:
-[x] Döp om färgerna som används i gui klassen till lämpliga klass-variabler. Exempel: self.vit = #fffff 
+[x] Döp om färgerna som används i gui klassen till lämpliga klass-variabler. Exempel: self.vit = #fffff
 
 [] Göra så att spelarna inte kan gissa samtidigt utan måste vänta på att den andra har gissat färdigt.
     [] Om man gissar rätt får man gissa igen.
@@ -13,3 +13,5 @@ Features:
 Buggar:
 [] Fixa så att man återgår till startskärmen när en anslutning brtyts
     [] Stäng ner socketen / avbryt anslutningen
+
+[x] Fixa bugg som gör så att man kan ändra färg på redan träffade rutor

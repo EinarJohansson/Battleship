@@ -76,7 +76,7 @@ class Server:
             if resultat == 'träff':
                 gui.p2.itemconfig(coord, fill='blue')
             else:
-                gui.p2.itemconfig(coord, fill='red')
+                gui.p2.itemconfig(coord, fill=gui.träffad)
         else:
             # inkommande koordinater, kolla om det är miss eller träff
             print(data_str)
@@ -99,9 +99,9 @@ class Server:
         # Koordinatens färg
         färg = gui.p1.itemcget(coord, 'fill')
 
-        if färg == '#9cffba':
+        if färg == gui.green or färg == gui.träffad:
             # rita på våran spelplan att vår motsåndare gisassde rätt på koordinaten
-            gui.p1.itemconfig(coord, fill='red')
+            gui.p1.itemconfig(coord, fill=gui.träffad)
             return True
 
         return False

@@ -12,6 +12,7 @@ class GUI:
         self.window.geometry('1000x700')
         self.blue = '#142a43'
         self.green = '#9cffba'
+        self.träffad = '#FF0000'	
         self.window.configure(bg=self.blue)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.öra = Server()
