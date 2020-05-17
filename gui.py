@@ -12,7 +12,6 @@ class GUI:
         self.window.geometry('1000x700')
         self.blue = '#142a43'
         self.green = '#9cffba'
-
         self.window.configure(bg=self.blue)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.öra = Server()
@@ -21,8 +20,7 @@ class GUI:
     def start(self):
         self.clear()
 
-        titel = tk.Label(self.window, text='Sänka skepp',
-                         bg=self.blue, fg=, font=('Roboto', 70))
+        titel = tk.Label(self.window, text='Sänka skepp', bg=self.blue, fg=self.green, font=('Roboto', 70))
         b_skapa = tk.Button(self.window, text='Skapa server', height=2, width=20, font=(
             'Roboto', 20), command=self.skapa)
         b_anslut = tk.Button(self.window, text='Anslut till server',
@@ -93,7 +91,7 @@ class GUI:
         self.p2 = tk.Canvas(self.window, width=400, height=400, bg=self.blue)
 
         self.redo = tk.Button(self.window, text='Redo', height=2, width=20, font=(
-            'Roboto', 20), command=lambda: self.öra.redo(self))
+            'Roboto', 20), command=lambda: self.öra.skicka('redo', self))
 
         titel.pack()
         self.p1.pack(side=tk.LEFT, padx=50)
@@ -102,7 +100,7 @@ class GUI:
 
         for r in range(10):
             for c in range(10):
-                coords = (c*20, r*20, c*20+20, r*20+20)
+                coords = (c*40, r*40, c*40+40, r*40+40)
                 # Din spelplan
                 self.p1.create_rectangle(coords, fill=self.blue, width=2)
                 # Fiendens spelplan
@@ -118,9 +116,7 @@ class GUI:
         coord = event.widget.find_withtag(tk.CURRENT)
 
         # Skicka koordinaten till motståndarens server och kolla om den är träffad eller inte
-        self.öra.gissa(self, coord)
-
-        #träff = self.p2.itemcget(coord, 'fill')
+        self.öra.skicka(coord, self)
 
     def kopiera(self):
         self.window.clipboard_clear()
