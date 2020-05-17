@@ -1,0 +1,14 @@
+Features:
+[] Göra så att spelarna inte kan gissa samtidigt utan måste vänta på att den andra har gissat färdigt.
+    [] Om man gissar rätt får man gissa igen.
+
+[] Man har ett förbestämt antal skepp
+    [] Skeppen ska ha olika storlek
+
+[] Den får sina skepp nerskjutna först förlorar medan den andra vinner
+    [] Avsluta spelet och återgå till start
+
+Buggar:
+[] Fixa så att man återgår till startskärmen när en anslutning brtyts
+    [] Stäng ner socketen / avbryt anslutningen
+ 

@@ -14,6 +14,7 @@ class Server:
                 s.listen()
             except:
                 gui.start()
+                return
 
             self.conn, self.addr = s.accept()
 
@@ -76,7 +77,6 @@ class Server:
                 gui.p2.itemconfig(coord, fill='blue')
             else:
                 gui.p2.itemconfig(coord, fill='red')
-
         else:
             # inkommande koordinater, kolla om det är miss eller träff
             print(data_str)
