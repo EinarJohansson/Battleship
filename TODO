@@ -1,4 +1,6 @@
 Features:
+[] Döp om färgerna som används i gui klassen till lämpliga klass-variabler. Exempel: self.vit = #fffff 
+
 [] Göra så att spelarna inte kan gissa samtidigt utan måste vänta på att den andra har gissat färdigt.
     [] Om man gissar rätt får man gissa igen.
 
