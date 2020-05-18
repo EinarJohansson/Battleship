@@ -125,7 +125,7 @@ class GUI:
         
         # Hämta skeppets koordinat
         coord = event.widget.find_withtag(tk.CURRENT)
-        self.öra.skepp.append(coord)
+        self.öra.skepp.add(coord)
 
         # Rita skeppet
         self.p1.itemconfig(tk.CURRENT, fill=self.green)
@@ -157,3 +157,12 @@ class GUI:
         children = self.window.winfo_children()
         for child in children:
             child.destroy()
+
+    def resultat(self, resultat):
+        '''Visa att vi vann'''        
+        self.clear()       
+
+        text = tk.Label(self.window, text=f'Du {resultat}!',
+                        bg=self.blue, fg=self.green, font=('Roboto', 70))
+        
+        text.pack()

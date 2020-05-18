@@ -6,7 +6,8 @@ class Server:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.port = 4444
-        self.skepp = list()
+        self.skepp = set()
+        self.träffade = set()
 
     def lyssna(self, gui):
         with self.server as s:
@@ -60,9 +61,7 @@ class Server:
                 print('båda är anslutna!!!')
                 gui.redo.pack_forget()
                 gui.din_tur()
-                
-
-        elif 'träff' in data_str or 'miss' in data_str:
+        elif 'träff' in data_str or 'miss' in data_str or 'vinst' in data_str:
             # kolla om gissningen träffade eller missade
             print(data_str)
             print('vi träffade eller missade!')
@@ -77,6 +76,11 @@ class Server:
 
             if resultat == 'träff':
                 gui.p2.itemconfig(coord, fill='blue')
+            elif resultat == 'vinst':
+                # Vi har vunnit!
+                gui.p2.itemconfig(coord, fill='blue')
+                print('vi vann!')
+                gui.resultat('vann')
             else:
                 # Sluta gissa
                 gui.p2.itemconfig(coord, fill=gui.red)
@@ -85,7 +89,13 @@ class Server:
             # inkommande koordinater, kolla om det är miss eller träff
             print(data_str)
             print('träffade eller missade vår motståndare?')
-            if self.träff(data_str, gui):
+
+            if self.träff(data_str, gui) == 'förlust':
+                # Skicka att vår motståndare vann
+                svar = str(data_str + ': vinst')
+                self.skicka(svar, gui)
+                gui.resultat('förlora')
+            elif self.träff(data_str, gui):
                 # Skicka att det är en träff
                 svar = str(data_str + ': träff')
                 self.skicka(svar, gui)
@@ -104,6 +114,15 @@ class Server:
         if coord in self.skepp:
             # rita på våran spelplan att vår motsåndare gisassde rätt på koordinaten
             gui.p1.itemconfig(coord, fill=gui.red)
+
+            # Spara att koordinaten har blivit träffad
+            self.träffade.add(coord)
+
+            if self.skepp == self.träffade:
+                # Vi förlorade
+                print('du förlorade!')
+                return 'förlust'
+            
             return True
 
         return False

@@ -9,8 +9,9 @@ Features:
 [] Man har ett förbestämt antal skepp
     [] Skeppen ska ha olika storlek
 
-[] Den får sina skepp nerskjutna först förlorar medan den andra vinner
-    [] Avsluta spelet och återgå till start
+[x] Den får sina skepp nerskjutna först förlorar medan den andra vinner
+    [x] Visa i GUI:n att man vann/förlora
+    [] Gör en knapp för att avsluta spelet och återgå till start
 
 [] Kommentera klart all kod
 
