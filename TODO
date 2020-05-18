@@ -11,12 +11,12 @@ Features:
 
 [x] Den får sina skepp nerskjutna först förlorar medan den andra vinner
     [x] Visa i GUI:n att man vann/förlora
-    [] Gör en knapp för att avsluta spelet och återgå till start
+    [x] Gör en knapp för att avsluta spelet och återgå till start
 
 [] Kommentera klart all kod
 
 Buggar:
-[] Fixa så att man återgår till startskärmen när en anslutning brtyts
-    [] Stäng ner socketen / avbryt anslutningen
+[x] Fixa så att man återgår till startskärmen när en anslutning brtyts
+    [x] Stäng ner socketen / avbryt anslutningen
 
 [x] Fixa bugg som gör så att man kan ändra färg på redan träffade rutor

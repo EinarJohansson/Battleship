@@ -6,6 +6,7 @@ class Server:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.port = 4444
+        self.fortsätt = True
         self.skepp = set()
         self.träffade = set()
 
@@ -26,14 +27,15 @@ class Server:
                 gui.placera_skepp()
 
                 while True:
-                    try:
-                        data = self.conn.recv(1024)
-                    except:
-                        gui.start()
-                        return
+                    if not self.fortsätt:
+                        break
+                    data = self.conn.recv(1024)
 
                     if data:
                         self.hantera(data, gui)
+                    else:
+                        self.stäng(gui)
+                        break
 
     def anslut(self, gui, host):
         with self.server as s:
@@ -46,9 +48,14 @@ class Server:
             gui.placera_skepp()
 
             while True:
+                if not self.fortsätt:
+                    break
                 data = s.recv(1024)
                 if data:
                     self.hantera(data, gui)
+                else:
+                    self.stäng(gui)
+                    break
 
     def hantera(self, data, gui):
         data_str = str(data.decode('utf-8')).strip()
@@ -135,7 +142,7 @@ class Server:
             try:
                 self.server.sendall(data)
             except:
-                gui.start()
+                self.stäng(gui)
                 return
 
         if data == b'redo':
@@ -146,3 +153,8 @@ class Server:
                 gui.redo.pack_forget()
                 # Jag börjar att gissa
                 gui.min_tur()
+
+    def stäng(self, gui):
+        gui.start()
+        self.conn.close()
+        self.fortsätt = False

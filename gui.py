@@ -43,9 +43,9 @@ class GUI:
         '''GUI för att skapa en server'''
         self.clear()
 
-        if not hasattr(self, 'tråd'):
-            tråd = threading.Thread(target=self.öra.lyssna, args=(self,))
-            tråd.start()
+        if not hasattr(self, 'lyssna_tråd'):
+            self.lyssna_tråd = threading.Thread(target=self.öra.lyssna, args=(self,))
+            self.lyssna_tråd.start()
 
         titel = tk.Label(self.window, text='Sänka skepp',
                          bg=self.blue, fg=self.green, font=('Roboto', 70))
@@ -80,8 +80,7 @@ class GUI:
 
         b_anslut = tk.Button(self.window, text='Anslut',
                             height=2, width=20, font=('Roboto', 20),
-                            command=lambda: threading.Thread(target=self.öra.anslut,
-                            args=(self, adress.get(),)).start())
+                            command=lambda: self.skapa_tråd(adress.get()))
 
         b_avbryt = tk.Button(self.window, text='Avbryt', height=2, width=20, font=(
             'Roboto', 20), command=self.start)
@@ -90,6 +89,11 @@ class GUI:
         adress.pack(pady=10)
         b_anslut.pack(pady=30)
         b_avbryt.pack(pady=10)
+
+    def skapa_tråd(self, adress):
+        if not hasattr(self, 'anslut_tråd'):
+            self.anslut_tråd = threading.Thread(target=self.öra.anslut, args=(self, adress,))
+            self.anslut_tråd.start()
 
     def placera_skepp(self):
         '''GUI för att placera ut sina skepp'''
@@ -159,10 +163,15 @@ class GUI:
             child.destroy()
 
     def resultat(self, resultat):
-        '''Visa att vi vann'''        
-        self.clear()       
+        '''Visa att vi vann/förlora'''        
+        self.clear()
+
+        self.öra.fortsätt = False
 
         text = tk.Label(self.window, text=f'Du {resultat}!',
                         bg=self.blue, fg=self.green, font=('Roboto', 70))
+        start = tk.Button(self.window, text='Gå till startskärm', height=2, width=20, font=(
+            'Roboto', 20), command=self.start)
         
         text.pack()
+        start.pack()
