@@ -58,25 +58,28 @@ class Server:
             if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
                 print('båda är anslutna!!!')
                 gui.redo.pack_forget()
-                gui.spela()
+                gui.din_tur()
+                
+
         elif 'träff' in data_str or 'miss' in data_str:
             # kolla om gissningen träffade eller missade
             print(data_str)
             print('vi träffade eller missade!')
 
-            # få fram koordinaten från strängen
-            coord, sep, resultat = data_str.partition(': ')
+            # få fram koordinaten och reslutatet från strängen
+            coord, resultat = data_str.split(': ')
+
             print('koordinaten: ', coord)
             print('resultat: ', resultat)
 
             coord = eval(coord)
 
-            färg = gui.p2.itemcget(coord, 'fill')
-
             if resultat == 'träff':
                 gui.p2.itemconfig(coord, fill='blue')
             else:
-                gui.p2.itemconfig(coord, fill=gui.träffad)
+                # Sluta gissa
+                gui.p2.itemconfig(coord, fill=gui.red)
+                gui.din_tur()
         else:
             # inkommande koordinater, kolla om det är miss eller träff
             print(data_str)
@@ -89,6 +92,8 @@ class Server:
                 # Skicka att det är en miss
                 svar = str(data_str + ': miss')
                 self.skicka(svar, gui)
+                # vår tur att gissa
+                gui.min_tur()
 
     def träff(self, coord, gui):
         '''Returnera sant ifall kordinaten är träffad'''
@@ -99,9 +104,9 @@ class Server:
         # Koordinatens färg
         färg = gui.p1.itemcget(coord, 'fill')
 
-        if färg == gui.green or färg == gui.träffad:
+        if färg == gui.green or färg == gui.red:
             # rita på våran spelplan att vår motsåndare gisassde rätt på koordinaten
-            gui.p1.itemconfig(coord, fill=gui.träffad)
+            gui.p1.itemconfig(coord, fill=gui.red)
             return True
 
         return False
@@ -123,4 +128,5 @@ class Server:
             if hasattr(self, 'p2_starta'):
                 print('båda är anslutna!!!')
                 gui.redo.pack_forget()
-                gui.spela()
+                # Jag börjar att gissa
+                gui.min_tur()

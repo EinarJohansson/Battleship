@@ -12,7 +12,7 @@ class GUI:
         self.window.geometry('1000x700')
         self.blue = '#142a43'
         self.green = '#9cffba'
-        self.träffad = '#FF0000'	
+        self.red = '#FF0000'	
         self.window.configure(bg=self.blue)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.öra = Server()
@@ -109,9 +109,13 @@ class GUI:
 
         self.p1.bind('<Button-1>', lambda event: self.p1.itemconfig(tk.CURRENT, fill=self.green))
 
-    def spela(self):
+    def min_tur(self):
         self.p1.unbind('<Button-1>')
         self.p2.bind('<Button-1>', lambda event: self.gissa(event))
+    
+    def din_tur(self):
+        self.p1.unbind('<Button-1>')
+        self.p2.unbind('<Button-1>')
 
     def gissa(self, event):
         coord = event.widget.find_withtag(tk.CURRENT)
