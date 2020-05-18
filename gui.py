@@ -7,18 +7,26 @@ import threading
 
 class GUI:
     def __init__(self):
+        # Guins färgschema
+        self.blue = '#142a43'
+        self.green = '#9cffba'
+        self.red = '#FF0000'
+        
+        # Fönstrets inställningar
         self.window = tk.Tk()
         self.window.title('Sänka skepp')
         self.window.geometry('1000x700')
-        self.blue = '#142a43'
-        self.green = '#9cffba'
-        self.red = '#FF0000'	
         self.window.configure(bg=self.blue)
-        self.host = socket.gethostbyname(socket.getfqdn())
+
+        # Servern
         self.öra = Server()
+        
+        # Gå till startsidan
         self.start()
 
     def start(self):
+        '''Programmets startsida'''
+
         self.clear()
 
         titel = tk.Label(self.window, text='Sänka skepp', bg=self.blue, fg=self.green, font=('Roboto', 70))
@@ -32,6 +40,7 @@ class GUI:
         b_anslut.pack(pady=30)
 
     def skapa(self):
+        '''GUI för att skapa en server'''
         self.clear()
 
         if not hasattr(self, 'tråd'):
@@ -42,7 +51,7 @@ class GUI:
                          bg=self.blue, fg=self.green, font=('Roboto', 70))
         info = tk.Label(self.window, text='Väntar på att någon ska ansluta till din server...',
                         bg=self.blue, fg='grey', font=('Roboto', 20))
-        uuid = tk.Label(self.window, text=self.host,
+        uuid = tk.Label(self.window, text=self.öra.host,
                         bg=self.blue, fg='white', font=('Roboto', 20))
 
         f = font.Font(uuid, uuid.cget('font'))
@@ -61,6 +70,7 @@ class GUI:
         b_avbryt.pack(pady=10)
 
     def anslut(self):
+        '''GUI för att ansluta till en server'''
         self.clear()
 
         titel = tk.Label(self.window, text='Sänka skepp',
@@ -82,6 +92,7 @@ class GUI:
         b_avbryt.pack(pady=10)
 
     def placera_skepp(self):
+        '''GUI för att placera ut sina skepp'''
         self.clear()
 
         titel = tk.Label(self.window, text='Sänka skepp',
@@ -102,33 +113,47 @@ class GUI:
         for r in range(10):
             for c in range(10):
                 coords = (c*40, r*40, c*40+40, r*40+40)
-                # Din spelplan
+                # Min spelplan
                 self.p1.create_rectangle(coords, fill=self.blue, width=2)
-                # Fiendens spelplan
-                self.p2.create_rectangle(coords, fill=self.blue, width=2)
+                # Din spelplan
+                self.p2.create_rectangle(coords, fill=self.blue, width=2)        
+        
+        self.p1.bind('<Button-1>', lambda event: self.spara_skepp(event))
+    
+    def spara_skepp(self, event):
+        '''Spara skeppens koordinater i server klassen'''
+        
+        # Hämta skeppets koordinat
+        coord = event.widget.find_withtag(tk.CURRENT)
+        self.öra.skepp.append(coord)
 
-        self.p1.bind('<Button-1>', lambda event: self.p1.itemconfig(tk.CURRENT, fill=self.green))
+        # Rita skeppet
+        self.p1.itemconfig(tk.CURRENT, fill=self.green)
 
     def min_tur(self):
+        '''Min tur att gissa'''
         self.p1.unbind('<Button-1>')
         self.p2.bind('<Button-1>', lambda event: self.gissa(event))
     
     def din_tur(self):
+        '''Din tur att gissa'''
         self.p1.unbind('<Button-1>')
         self.p2.unbind('<Button-1>')
 
     def gissa(self, event):
+        '''Kolla med servern om vår gissning är korrekt eller inte''' 
         coord = event.widget.find_withtag(tk.CURRENT)
 
         # Skicka koordinaten till motståndarens server och kolla om den är träffad eller inte
         self.öra.skicka(coord, self)
 
     def kopiera(self):
+        '''Kopiera servernamnet så att man enkelt kan dela hostnamnet med en kompis'''
         self.window.clipboard_clear()
-        self.window.clipboard_append(self.host)
+        self.window.clipboard_append(self.öra.host)
 
     def clear(self):
-        # Clear window
+        '''Rensa rutan från onödigt mojs'''
         children = self.window.winfo_children()
         for child in children:
             child.destroy()

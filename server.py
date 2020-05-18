@@ -6,6 +6,7 @@ class Server:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.port = 4444
+        self.skepp = list()
 
     def lyssna(self, gui):
         with self.server as s:
@@ -96,15 +97,11 @@ class Server:
                 gui.min_tur()
 
     def träff(self, coord, gui):
-        '''Returnera sant ifall kordinaten är träffad'''
-
         # Gör om sträng till tupel
         coord = eval(coord)
 
-        # Koordinatens färg
-        färg = gui.p1.itemcget(coord, 'fill')
-
-        if färg == gui.green or färg == gui.red:
+        # Kolla om koordinaten har träffat ett av våra skepp
+        if coord in self.skepp:
             # rita på våran spelplan att vår motsåndare gisassde rätt på koordinaten
             gui.p1.itemconfig(coord, fill=gui.red)
             return True

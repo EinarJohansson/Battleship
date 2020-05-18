@@ -4,11 +4,15 @@ Features:
 [x] Göra så att spelarna inte kan gissa samtidigt utan måste vänta på att den andra har gissat färdigt.
     [x] Om man gissar rätt får man gissa igen.
 
+[x] Spara koordinaterna i en lista så att man slipper kolla på koordinaternas färg.
+
 [] Man har ett förbestämt antal skepp
     [] Skeppen ska ha olika storlek
 
 [] Den får sina skepp nerskjutna först förlorar medan den andra vinner
     [] Avsluta spelet och återgå till start
+
+[] Kommentera klart all kod
 
 Buggar:
 [] Fixa så att man återgår till startskärmen när en anslutning brtyts
