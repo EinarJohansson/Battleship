@@ -9,6 +9,10 @@ Features:
 [] Man har ett förbestämt antal skepp
     [] Skeppen ska ha olika storlek
 
+[x] Visa vems tur det är att gissa
+
+[] Visa vart den andra spelaren har gissat på ens spelplan
+
 [x] Den får sina skepp nerskjutna först förlorar medan den andra vinner
     [x] Visa i GUI:n att man vann/förlora
     [x] Gör en knapp för att avsluta spelet och återgå till start

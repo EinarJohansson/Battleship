@@ -138,11 +138,20 @@ class GUI:
         '''Min tur att gissa'''
         self.p1.unbind('<Button-1>')
         self.p2.bind('<Button-1>', lambda event: self.gissa(event))
+
+        if not hasattr(self, 'tur'):
+            self.tur = tk.Label(self.window, text='Min tur',
+                                bg=self.blue, fg=self.green, font=('Roboto', 20))
+
+        self.tur.pack()
     
     def din_tur(self):
         '''Din tur att gissa'''
         self.p1.unbind('<Button-1>')
         self.p2.unbind('<Button-1>')
+
+        if hasattr(self, 'tur'):
+            self.tur.pack_forget()
 
     def gissa(self, event):
         '''Kolla med servern om vår gissning är korrekt eller inte''' 
