@@ -6,8 +6,9 @@ Features:
 
 [x] Spara koordinaterna i en lista så att man slipper kolla på koordinaternas färg.
 
-[] Man har ett förbestämt antal skepp
-    [] Skeppen ska ha olika storlek
+[x] Man har ett förbestämt antal skepp
+    [x] Skeppen ska ha olika storlek
+    [x] Kunna ändra riktning
 
 [x] Visa vems tur det är att gissa
 

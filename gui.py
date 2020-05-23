@@ -11,6 +11,10 @@ class GUI:
         self.blue = '#142a43'
         self.green = '#9cffba'
         self.red = '#FF0000'
+
+        # Skeppens inställningar
+        self.skepp_storlek = 5 # 5-2 rutor
+        self.skepp_vertikal = True # True -> Vertikal, False -> horizontell
         
         # Fönstrets inställningar
         self.window = tk.Tk()
@@ -122,17 +126,50 @@ class GUI:
                 # Din spelplan
                 self.p2.create_rectangle(coords, fill=self.blue, width=2)        
         
-        self.p1.bind('<Button-1>', lambda event: self.spara_skepp(event))
-    
-    def spara_skepp(self, event):
+        self.p1.bind('<Button-1>', lambda event: self.rita_skepp(event))
+        self.window.bind('<Key>', self.ändra_riktning)
+
+    def ändra_riktning(self, event):
+        if self.skepp_vertikal:
+            self.skepp_vertikal = False
+        else:
+            self.skepp_vertikal = True
+
+    def rita_skepp(self, event):
         '''Spara skeppens koordinater i server klassen'''
         
         # Hämta skeppets koordinat
         coord = event.widget.find_withtag(tk.CURRENT)
-        self.öra.skepp.add(coord)
 
-        # Rita skeppet
-        self.p1.itemconfig(tk.CURRENT, fill=self.green)
+        # Rita skeppet beroende efter riktning och storlek
+        if self.skepp_storlek >= 2:
+            print('coord: ', coord[0])
+            kolumn = abs(coord[0]-1) % 10 # 0-9
+            
+            if coord[0] <= 10:
+                rad = 0
+            else:
+                rad = int(str(coord[0]-1)[0])
+
+            if self.skepp_vertikal and rad + self.skepp_storlek <= 10:
+                # rita vertikalt
+                for i in range(self.skepp_storlek):
+                    skepp = (coord[0]+i*10,)
+                    print('skepp: ', skepp)
+                    self.p1.itemconfig(skepp, fill=self.green) 
+                    self.öra.skepp.add(skepp)
+
+                self.skepp_storlek -= 1
+            
+            elif self.skepp_vertikal == False and kolumn + self.skepp_storlek <= 10:
+                # rita horizontellt
+                for i in range(self.skepp_storlek):
+                    skepp = (coord[0]+i,)
+                    print('skepp: ', skepp)
+                    self.p1.itemconfig(skepp, fill=self.green)
+                    self.öra.skepp.add(skepp)
+
+                self.skepp_storlek -= 1
 
     def min_tur(self):
         '''Min tur att gissa'''

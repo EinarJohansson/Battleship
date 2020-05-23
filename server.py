@@ -3,14 +3,18 @@ import socket
 
 class Server:
     def __init__(self):
+        # Server inställningar
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostbyname(socket.getfqdn())
         self.port = 4444
+
+        # Håll koll på skeppen och om spelet är över eller inte
         self.fortsätt = True
         self.skepp = set()
         self.träffade = set()
 
     def lyssna(self, gui):
+        '''Lyssna efter inkommande data från vår motståndare'''
         with self.server as s:
             try:
                 s.bind((self.host, self.port))
@@ -19,6 +23,7 @@ class Server:
                 gui.start()
                 return
 
+            # Ta emot ett connection objekt och vår motståndares adress
             self.conn, self.addr = s.accept()
 
             with self.conn:
@@ -26,6 +31,7 @@ class Server:
                 # Gå vidare till att starta spelet
                 gui.placera_skepp()
 
+                # Ta emot data
                 while True:
                     if not self.fortsätt:
                         break
@@ -38,6 +44,7 @@ class Server:
                         break
 
     def anslut(self, gui, host):
+        '''Anslut till vår motståndares server'''
         with self.server as s:
             try:
                 s.connect((host, 4444))
@@ -45,8 +52,10 @@ class Server:
                 gui.start()
                 return
 
+            # Starta spelet
             gui.placera_skepp()
 
+            # Ta emot data
             while True:
                 if not self.fortsätt:
                     break
@@ -58,20 +67,17 @@ class Server:
                     break
 
     def hantera(self, data, gui):
+        '''Hantera datat vi har tagit emot'''
         data_str = str(data.decode('utf-8')).strip()
-
-        print('Received:', data_str)
 
         if data_str == 'redo':
             self.p2_starta = True
             if hasattr(self, 'p1_starta') and hasattr(self, 'p2_starta'):
-                print('båda är anslutna!!!')
+                # Båda är anslutna!
                 gui.redo.pack_forget()
                 gui.din_tur()
         elif 'träff' in data_str or 'miss' in data_str or 'vinst' in data_str:
             # kolla om gissningen träffade eller missade
-            print(data_str)
-            print('vi träffade eller missade!')
 
             # få fram koordinaten och reslutatet från strängen
             coord, resultat = data_str.split(': ')
@@ -79,6 +85,7 @@ class Server:
             print('koordinaten: ', coord)
             print('resultat: ', resultat)
 
+            # Konvertera datatyp från sträng till tippel
             coord = eval(coord)
 
             if resultat == 'träff':
@@ -86,7 +93,6 @@ class Server:
             elif resultat == 'vinst':
                 # Vi har vunnit!
                 gui.p2.itemconfig(coord, fill='blue')
-                print('vi vann!')
                 gui.resultat('vann')
             else:
                 # Sluta gissa
@@ -94,8 +100,6 @@ class Server:
                 gui.din_tur()
         else:
             # inkommande koordinater, kolla om det är miss eller träff
-            print(data_str)
-            print('träffade eller missade vår motståndare?')
 
             if self.träff(data_str, gui) == 'förlust':
                 # Skicka att vår motståndare vann
@@ -114,6 +118,7 @@ class Server:
                 gui.min_tur()
 
     def träff(self, coord, gui):
+        '''Kolla om vår motståndare har träffat vårt skepp'''
         # Gör om sträng till tupel
         coord = eval(coord)
 
@@ -127,7 +132,6 @@ class Server:
 
             if self.skepp == self.träffade:
                 # Vi förlorade
-                print('du förlorade!')
                 return 'förlust'
             
             return True
@@ -135,6 +139,7 @@ class Server:
         return False
 
     def skicka(self, data, gui):
+        '''Skicka data till vår motståndare'''
         data = str(data).encode('utf-8')
         try:
             self.conn.send(data)
@@ -155,6 +160,11 @@ class Server:
                 gui.min_tur()
 
     def stäng(self, gui):
+        '''Stäng ner vår anslutning''' 
         gui.start()
-        self.conn.close()
+        try:
+            self.conn.close()
+        except Exception as e:
+            print(e)
+            
         self.fortsätt = False
