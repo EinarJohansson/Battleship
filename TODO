@@ -12,13 +12,11 @@ Features:
 
 [x] Visa vems tur det är att gissa
 
-[] Visa vart den andra spelaren har gissat på ens spelplan
-
 [x] Den får sina skepp nerskjutna först förlorar medan den andra vinner
     [x] Visa i GUI:n att man vann/förlora
     [x] Gör en knapp för att avsluta spelet och återgå till start
 
-[] Kommentera klart all kod
+[x] Kommentera klart all kod
 
 Buggar:
 [x] Fixa så att man återgår till startskärmen när en anslutning brtyts
